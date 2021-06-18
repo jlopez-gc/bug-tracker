@@ -44,7 +44,7 @@ test('renders the bug id, name and status when found', async () => {
     const { findByText } = await render(<App />);
     const idElement = await findByText(/524/i);
     expect(idElement).toBeInTheDocument();
-    const nameElement = await findByText(/Test BugPayload 1/i);
+    const nameElement = await findByText(/Test Bug 1/i);
     expect(nameElement).toBeInTheDocument();
     const statusElement = await findByText(/PENDING/i);
     expect(statusElement).toBeInTheDocument();
