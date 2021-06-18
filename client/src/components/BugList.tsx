@@ -1,15 +1,17 @@
 import React, { ChangeEvent, MutableRefObject, useEffect, useRef, useState } from 'react';
 import { Messages } from 'primereact/messages';
 import { InputText } from 'primereact/inputtext';
-import { DataTable } from 'primereact/datatable';
+import { DataTable, DataTableRowClickEventParams } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { BugPayload } from '../shared/models/BugPayload';
 import { findAllBugs } from '../shared/services/bug.service';
+import { RouteComponentProps, useNavigate } from '@reach/router';
 
-const BugList: React.FunctionComponent = () => {
+const BugList: React.FunctionComponent<RouteComponentProps> = () => {
     const [bugs, setBugs] = useState<BugPayload[]>([]);
     const [globalFilter, setGlobalFilter] = useState<string>('');
     const messagesReference: MutableRefObject<Messages | null> = useRef(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         findAllBugs()
@@ -32,9 +34,17 @@ const BugList: React.FunctionComponent = () => {
                     placeholder="Search"
                     value={globalFilter}
                     onChange={(event: ChangeEvent<HTMLInputElement>) => setGlobalFilter(event.target.value)}
+                    data-testid="search-input"
                 />
             </span>
-            <DataTable value={bugs} removableSort paginator rows={10} globalFilter={globalFilter}>
+            <DataTable
+                value={bugs}
+                removableSort
+                paginator
+                rows={10}
+                globalFilter={globalFilter}
+                onRowClick={(event: DataTableRowClickEventParams) => navigate(`/bug/${event.data.id}`)}
+            >
                 <Column field="id" header="ID" sortable />
                 <Column field="name" header="Name" sortable />
                 <Column field="status.name" header="Status" filterField="status.name" sortable />

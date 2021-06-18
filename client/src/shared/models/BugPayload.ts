@@ -1,10 +1,10 @@
 import { StatusPayload } from './StatusPayload';
 
 export interface BugPayload {
-    id: number;
+    id: number | null;
     name: string;
     description: string;
-    status: StatusPayload;
+    status: StatusPayload | null;
     createdAt: string;
     updatedAt: string;
 }
