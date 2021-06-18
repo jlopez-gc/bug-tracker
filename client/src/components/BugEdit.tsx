@@ -3,12 +3,14 @@ import { RouteComponentProps, useParams } from '@reach/router';
 import { BugPayload } from '../shared/models/BugPayload';
 import { findBugById } from '../shared/services/bug.service';
 import { Messages } from 'primereact/messages';
-import { Field, FieldProps, Form, Formik, FormikValues } from 'formik';
+import { Field, FieldInputProps, FieldProps, Form, Formik, FormikValues } from 'formik';
 import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { Dropdown } from 'primereact/dropdown';
 import { Button } from 'primereact/button';
 import DateMask from '../shared/components/DateMask';
+import { findAllStatuses } from '../shared/services/status.service';
+import { StatusPayload } from '../shared/models/StatusPayload';
 
 const BugEdit: React.FunctionComponent<RouteComponentProps> = () => {
     const routeParams = useParams();
@@ -36,12 +38,6 @@ const BugEdit: React.FunctionComponent<RouteComponentProps> = () => {
             });
     }, [routeParams.id]);
 
-    const options = [
-        { id: 1, name: 'Pending' },
-        { id: 2, name: 'In Progress' },
-        { id: 3, name: 'Done' },
-    ];
-
     return (
         <>
             <Messages ref={messagesRef} />
@@ -65,7 +61,7 @@ const BugEdit: React.FunctionComponent<RouteComponentProps> = () => {
                                 <div className="col">
                                     <Field name="status">
                                         {(fieldProps: FieldProps) => (
-                                            <Dropdown options={options} optionLabel="name" {...fieldProps.field} />
+                                            <StatusSelectorDropdown fieldInputProps={fieldProps.field} />
                                         )}
                                     </Field>
                                 </div>
@@ -105,6 +101,16 @@ const BugEdit: React.FunctionComponent<RouteComponentProps> = () => {
             </div>
         </>
     );
+};
+
+const StatusSelectorDropdown = (props: { fieldInputProps: FieldInputProps<any> }) => {
+    const [options, setOptions] = useState<StatusPayload[] | null>(null);
+
+    useEffect(() => {
+        findAllStatuses().then((statuses: StatusPayload[]) => setOptions(statuses));
+    }, []);
+
+    return <Dropdown options={options ?? []} optionLabel="name" {...props.fieldInputProps} disabled={!options} />;
 };
 
 export default BugEdit;
