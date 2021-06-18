@@ -1,9 +1,9 @@
 import React, { MutableRefObject, useEffect, useRef, useState } from 'react';
-import { RouteComponentProps, useParams } from '@reach/router';
+import { RouteComponentProps, useNavigate, useParams } from '@reach/router';
 import { BugPayload } from '../shared/models/BugPayload';
-import { findBugById } from '../shared/services/bug.service';
+import { findBugById, updateBugById } from '../shared/services/bug.service';
 import { Messages } from 'primereact/messages';
-import { Field, FieldInputProps, FieldProps, Form, Formik, FormikValues } from 'formik';
+import { Field, FieldInputProps, FieldProps, Form, Formik } from 'formik';
 import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { Dropdown } from 'primereact/dropdown';
@@ -14,6 +14,7 @@ import { StatusPayload } from '../shared/models/StatusPayload';
 
 const BugEdit: React.FunctionComponent<RouteComponentProps> = () => {
     const routeParams = useParams();
+    const navigate = useNavigate();
 
     const [bug, setBug] = useState<BugPayload>({
         name: '',
@@ -38,17 +39,20 @@ const BugEdit: React.FunctionComponent<RouteComponentProps> = () => {
             });
     }, [routeParams.id]);
 
+    const handleSubmit = (values: BugPayload) => {
+        updateBugById(routeParams.id, values).then(() => console.log('Updated'));
+    };
+
     return (
         <>
             <Messages ref={messagesRef} />
             <div className="row">
                 <div className="col-8">
-                    <h3>Edit Bug</h3>
-                    <Formik
-                        onSubmit={(values: FormikValues) => console.log('Submit', values)}
-                        initialValues={bug}
-                        enableReinitialize
-                    >
+                    <h3>
+                        <button onClick={() => navigate('/')}>Go back</button>
+                        Edit Bug
+                    </h3>
+                    <Formik onSubmit={handleSubmit} initialValues={bug} enableReinitialize>
                         <Form>
                             <div className="row mb-3">
                                 <div className="col">
