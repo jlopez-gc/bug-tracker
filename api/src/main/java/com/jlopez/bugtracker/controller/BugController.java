@@ -4,6 +4,7 @@ import com.jlopez.bugtracker.model.BugPayload;
 import com.jlopez.bugtracker.service.BugService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,5 +20,10 @@ public class BugController {
     @GetMapping
     public List<BugPayload> findAll() {
         return bugService.findAll();
+    }
+
+    @GetMapping("/{id}")
+    public BugPayload findById(@PathVariable Long id) {
+        return bugService.findById(id);
     }
 }

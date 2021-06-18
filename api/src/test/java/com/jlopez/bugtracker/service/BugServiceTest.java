@@ -1,5 +1,6 @@
 package com.jlopez.bugtracker.service;
 
+import com.jlopez.bugtracker.exception.ResourceNotFoundException;
 import com.jlopez.bugtracker.model.BugPayload;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -16,7 +17,22 @@ public class BugServiceTest {
 
     @Test
     public void it_finds_all_bugs() {
-        List<BugPayload> all = bugService.findAll();
-        Assertions.assertEquals(1, all.size());
+        List<BugPayload> allBugs = bugService.findAll();
+        Assertions.assertEquals(1, allBugs.size());
+    }
+
+    @Test
+    public void it_finds_a_bug_by_id() {
+        BugPayload bug = bugService.findById(1L);
+        Assertions.assertNotNull(bug);
+    }
+
+    @Test
+    public void it_throws_exception_if_bug_not_found() {
+        Exception exception = Assertions.assertThrows(ResourceNotFoundException.class, () -> {
+            bugService.findById(200L);
+        });
+
+        Assertions.assertEquals("Bug with id 200 not found", exception.getMessage());
     }
 }

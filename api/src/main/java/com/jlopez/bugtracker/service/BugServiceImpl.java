@@ -1,5 +1,6 @@
 package com.jlopez.bugtracker.service;
 
+import com.jlopez.bugtracker.exception.ResourceNotFoundException;
 import com.jlopez.bugtracker.model.BugPayload;
 import com.jlopez.bugtracker.repository.BugRepository;
 import lombok.AllArgsConstructor;
@@ -23,5 +24,13 @@ public class BugServiceImpl implements BugService {
                 .stream()
                 .map(bug -> conversionService.convert(bug, BugPayload.class))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public BugPayload findById(Long id) {
+        return bugRepository
+                .findById(id)
+                .map(bug -> conversionService.convert(bug, BugPayload.class))
+                .orElseThrow(() -> new ResourceNotFoundException(String.format("Bug with id %s not found", id)));
     }
 }
