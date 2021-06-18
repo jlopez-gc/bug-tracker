@@ -18,7 +18,7 @@ public class BugServiceTest {
     @Test
     public void it_finds_all_bugs() {
         List<BugPayload> allBugs = bugService.findAll();
-        Assertions.assertEquals(1, allBugs.size());
+        Assertions.assertEquals(2, allBugs.size());
     }
 
     @Test
