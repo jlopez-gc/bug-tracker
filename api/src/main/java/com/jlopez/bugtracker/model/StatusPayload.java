@@ -11,7 +11,7 @@ public class StatusPayload implements Serializable {
 
     private static final long serialVersionUID = -3773559041735846973L;
 
-    private Long id;
+    private final Long id;
 
-    private String name;
+    private final String name;
 }
