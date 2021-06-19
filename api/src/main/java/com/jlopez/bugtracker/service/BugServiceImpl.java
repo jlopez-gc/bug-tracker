@@ -42,18 +42,18 @@ public class BugServiceImpl implements BugService {
 
     @Override
     public void update(Long id, UpdateRequestPayload updateRequestPayload) {
-        Bug bug = bugRepository
+        Bug databaseBug = bugRepository
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("Bug with id %s not found", id)));
 
-        Status status = statusRepository
+        Status databaseStatus = statusRepository
                 .findById(updateRequestPayload.getStatus().getId())
                 .orElseThrow(() -> new InvalidInformationException(String.format("Bug with id %s could not be updated, wrong information provided", id)));
 
-        bug.setName(updateRequestPayload.getName());
-        bug.setDescription(updateRequestPayload.getDescription());
-        bug.setStatus(status);
+        databaseBug.setName(updateRequestPayload.getName());
+        databaseBug.setDescription(updateRequestPayload.getDescription());
+        databaseBug.setStatus(databaseStatus);
 
-        bugRepository.save(bug);
+        bugRepository.save(databaseBug);
     }
 }
