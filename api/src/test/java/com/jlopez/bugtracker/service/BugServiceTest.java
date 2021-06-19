@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
+import java.util.Optional;
 
 @SpringBootTest
 public class BugServiceTest {
@@ -23,12 +24,15 @@ public class BugServiceTest {
 
     @Test
     public void it_finds_a_bug_by_id() {
-        BugPayload bug = bugService.findById(1L);
-        Assertions.assertNotNull(bug);
+        Optional<BugPayload> maybeBug = bugService.findById(1L);
+        Assertions.assertTrue(maybeBug.isPresent());
     }
 
     @Test
-    public void it_throws_exception_if_bug_not_found() {
+    public void it_returns_an_empty_optional_if_bug_not_found() {
+        Optional<BugPayload> maybeBug = bugService.findById(200L);
+        Assertions.assertTrue(maybeBug.isEmpty());
+    }
         Exception exception = Assertions.assertThrows(ResourceNotFoundException.class, () -> {
             bugService.findById(200L);
         });

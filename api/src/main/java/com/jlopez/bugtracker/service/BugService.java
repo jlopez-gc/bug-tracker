@@ -4,9 +4,10 @@ import com.jlopez.bugtracker.model.BugPayload;
 import com.jlopez.bugtracker.model.UpdateRequestPayload;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface BugService {
     List<BugPayload> findAll();
-    BugPayload findById(Long id);
+    Optional<BugPayload> findById(Long id);
     void update(Long id, UpdateRequestPayload updateRequestPayload);
 }

@@ -6,6 +6,7 @@ import com.jlopez.bugtracker.service.BugService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -26,9 +27,9 @@ public class BugController {
     }
 
     @GetMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public BugPayload findById(@PathVariable Long id) {
-        return bugService.findById(id);
+    public ResponseEntity<BugPayload> findById(@PathVariable Long id) {
+        return bugService.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    }
     }
 
     @PutMapping("/{id}")

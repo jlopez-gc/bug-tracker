@@ -33,11 +33,11 @@ public class BugServiceImpl implements BugService {
     }
 
     @Override
-    public BugPayload findById(Long id) {
+    public Optional<BugPayload> findById(Long id) {
         return bugRepository
                 .findById(id)
-                .map(bug -> conversionService.convert(bug, BugPayload.class))
-                .orElseThrow(() -> new ResourceNotFoundException(String.format("Bug with id %s not found", id)));
+                .flatMap(bug -> Optional.ofNullable(conversionService.convert(bug, BugPayload.class)));
+    }
     }
 
     @Override
