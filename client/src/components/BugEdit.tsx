@@ -1,20 +1,13 @@
 import React, { MutableRefObject, useEffect, useRef, useState } from 'react';
-import { RouteComponentProps, useNavigate, useParams } from '@reach/router';
+import { RouteComponentProps, useParams } from '@reach/router';
 import { BugPayload } from '../shared/models/BugPayload';
 import { findBugById, updateBugById } from '../shared/services/bug.service';
 import { Messages } from 'primereact/messages';
-import { Field, FieldInputProps, FieldProps, Form, Formik } from 'formik';
-import { InputText } from 'primereact/inputtext';
-import { InputTextarea } from 'primereact/inputtextarea';
-import { Dropdown } from 'primereact/dropdown';
-import { Button } from 'primereact/button';
 import DateMask from '../shared/components/DateMask';
-import { findAllStatuses } from '../shared/services/status.service';
-import { StatusPayload } from '../shared/models/StatusPayload';
+import BugInformationEditor from './BugInformationEditor';
 
 const BugEdit: React.FunctionComponent<RouteComponentProps> = () => {
     const routeParams = useParams();
-    const navigate = useNavigate();
 
     const [bug, setBug] = useState<BugPayload>({
         name: '',
@@ -48,44 +41,8 @@ const BugEdit: React.FunctionComponent<RouteComponentProps> = () => {
             <Messages ref={messagesRef} />
             <div className="row">
                 <div className="col-8">
-                    <h3>
-                        <button onClick={() => navigate('/')}>Go back</button>
-                        Edit Bug
-                    </h3>
-                    <Formik onSubmit={handleSubmit} initialValues={bug} enableReinitialize>
-                        <Form>
-                            <div className="row mb-3">
-                                <div className="col">
-                                    <Field name="name">
-                                        {(fieldProps: FieldProps) => (
-                                            <InputText className="form-control" {...fieldProps.field} />
-                                        )}
-                                    </Field>
-                                </div>
-                                <div className="col">
-                                    <Field name="status">
-                                        {(fieldProps: FieldProps) => (
-                                            <StatusSelectorDropdown fieldInputProps={fieldProps.field} />
-                                        )}
-                                    </Field>
-                                </div>
-                            </div>
-                            <div className="row mb-3">
-                                <div className="col">
-                                    <Field name="description">
-                                        {(fieldProps: FieldProps) => (
-                                            <InputTextarea rows={10} className="form-control " {...fieldProps.field} />
-                                        )}
-                                    </Field>
-                                </div>
-                            </div>
-                            <div className="row">
-                                <div className="col">
-                                    <Button type="submit">Submit</Button>
-                                </div>
-                            </div>
-                        </Form>
-                    </Formik>
+                    <h3>Edit Bug</h3>
+                    <BugInformationEditor onSubmit={handleSubmit} initialValues={bug} />
                 </div>
                 <div className="col-4">
                     <h3>Information</h3>
@@ -105,16 +62,6 @@ const BugEdit: React.FunctionComponent<RouteComponentProps> = () => {
             </div>
         </>
     );
-};
-
-const StatusSelectorDropdown = (props: { fieldInputProps: FieldInputProps<any> }) => {
-    const [options, setOptions] = useState<StatusPayload[] | null>(null);
-
-    useEffect(() => {
-        findAllStatuses().then((statuses: StatusPayload[]) => setOptions(statuses));
-    }, []);
-
-    return <Dropdown options={options ?? []} optionLabel="name" {...props.fieldInputProps} disabled={!options} />;
 };
 
 export default BugEdit;
