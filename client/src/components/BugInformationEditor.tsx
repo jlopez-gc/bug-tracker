@@ -25,7 +25,9 @@ const BugInformationEditor = (props: { onSubmit: any; initialValues: BugPayload 
                 <div className="row mb-3">
                     <div className="col-8">
                         <Field name="name">
-                            {(fieldProps: FieldProps) => <InputText className="form-control" {...fieldProps.field} />}
+                            {(fieldProps: FieldProps) => (
+                                <InputText className="form-control" {...fieldProps.field} placeholder="Name" />
+                            )}
                         </Field>
                         <CustomErrorMessage name="name" />
                     </div>
@@ -41,7 +43,12 @@ const BugInformationEditor = (props: { onSubmit: any; initialValues: BugPayload 
                     <div className="col">
                         <Field name="description">
                             {(fieldProps: FieldProps) => (
-                                <InputTextarea rows={10} className="form-control " {...fieldProps.field} />
+                                <InputTextarea
+                                    rows={10}
+                                    className="form-control "
+                                    {...fieldProps.field}
+                                    placeholder="Description"
+                                />
                             )}
                         </Field>
                         <CustomErrorMessage name="description" />

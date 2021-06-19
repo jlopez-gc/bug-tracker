@@ -13,13 +13,13 @@ export const renderWithRouter = (
 };
 
 export const renderWithRouterWrapper = (
-    ui: JSX.Element,
+    component: JSX.Element,
     { route = '/', history = createHistory(createMemorySource(route)) } = {},
 ) => {
     return {
         ...render(
             <LocationProvider history={history}>
-                <Router>{ui}</Router>
+                <Router>{component}</Router>
             </LocationProvider>,
         ),
         history,

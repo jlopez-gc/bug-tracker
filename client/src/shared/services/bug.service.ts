@@ -8,7 +8,9 @@ export const findAllBugs = async (): Promise<BugPayload[]> => {
 };
 
 export const findBugById = async (id: number): Promise<BugPayload> => {
-    return axios.get(`/bug/${id}`).then((response: AxiosResponse<BugPayload>) => response.data);
+    return axios
+        .get(`/bug/${id}`)
+        .then((response: AxiosResponse<BugPayload>) => BugPayload.fromServerData(response.data));
 };
 
 export const createBug = (bug: BugPayload) => {

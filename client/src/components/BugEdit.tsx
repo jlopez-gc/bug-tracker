@@ -33,7 +33,21 @@ const BugEdit: React.FunctionComponent<RouteComponentProps> = () => {
     }, [routeParams.id]);
 
     const handleSubmit = (values: BugPayload) => {
-        updateBugById(routeParams.id, values).then(() => console.log('Updated'));
+        updateBugById(routeParams.id, values)
+            .then(() =>
+                messagesRef.current?.show({
+                    severity: 'success',
+                    sticky: false,
+                    detail: 'Bug updated successfully',
+                }),
+            )
+            .catch(() => {
+                messagesRef.current?.show({
+                    severity: 'error',
+                    sticky: true,
+                    detail: 'Bug could not be updated',
+                });
+            });
     };
 
     return (
