@@ -1,34 +1,9 @@
 import React from 'react';
-import { render } from '@testing-library/react';
 import { rest } from 'msw';
-import { createHistory, createMemorySource, LocationProvider, Router } from '@reach/router';
 import BugList from './components/BugList';
 import { server } from './setupTests';
 import userEvent from '@testing-library/user-event';
-
-function renderWithRouter(
-    component: JSX.Element,
-    { route = '/', history = createHistory(createMemorySource(route)) } = {},
-) {
-    return {
-        ...render(<LocationProvider history={history}>{component}</LocationProvider>),
-        history,
-    };
-}
-
-function renderWithRouterWrapper(
-    ui: JSX.Element,
-    { route = '/', history = createHistory(createMemorySource(route)) } = {},
-) {
-    return {
-        ...render(
-            <LocationProvider history={history}>
-                <Router>{ui}</Router>
-            </LocationProvider>,
-        ),
-        history,
-    };
-}
+import { renderWithRouterWrapper } from './testing.util';
 
 test('renders the bug id, name and status when found', async () => {
     const { findByText } = await renderWithRouterWrapper(<BugList path="/" />);
