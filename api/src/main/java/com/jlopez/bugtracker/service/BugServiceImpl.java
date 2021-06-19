@@ -5,6 +5,7 @@ import com.jlopez.bugtracker.entity.Status;
 import com.jlopez.bugtracker.exception.InvalidInformationException;
 import com.jlopez.bugtracker.exception.ResourceNotFoundException;
 import com.jlopez.bugtracker.model.BugPayload;
+import com.jlopez.bugtracker.model.CreationRequestPayload;
 import com.jlopez.bugtracker.model.UpdateRequestPayload;
 import com.jlopez.bugtracker.repository.BugRepository;
 import com.jlopez.bugtracker.repository.StatusRepository;
@@ -13,6 +14,7 @@ import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,6 +40,20 @@ public class BugServiceImpl implements BugService {
                 .findById(id)
                 .flatMap(bug -> Optional.ofNullable(conversionService.convert(bug, BugPayload.class)));
     }
+
+    @Override
+    public void create(CreationRequestPayload creationRequestPayload) {
+        Bug newBug = new Bug();
+        newBug.setName(creationRequestPayload.getName());
+        newBug.setDescription(creationRequestPayload.getDescription());
+
+        Status status = statusRepository
+                .findById(creationRequestPayload.getStatus().getId())
+                .orElseThrow(() -> new InvalidInformationException("Bug could not be created, wrong information provided"));
+
+        newBug.setStatus(status);
+
+        bugRepository.save(newBug);
     }
 
     @Override

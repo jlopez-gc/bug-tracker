@@ -1,6 +1,7 @@
 package com.jlopez.bugtracker.controller;
 
 import com.jlopez.bugtracker.model.BugPayload;
+import com.jlopez.bugtracker.model.CreationRequestPayload;
 import com.jlopez.bugtracker.model.UpdateRequestPayload;
 import com.jlopez.bugtracker.service.BugService;
 import lombok.AllArgsConstructor;
@@ -30,6 +31,13 @@ public class BugController {
     public ResponseEntity<BugPayload> findById(@PathVariable Long id) {
         return bugService.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public void create(@RequestBody @Valid CreationRequestPayload creationRequestPayload) {
+        log.info("Creating bug with the following information {}", creationRequestPayload);
+        bugService.create(creationRequestPayload);
+        log.info("created bug with");
     }
 
     @PutMapping("/{id}")
