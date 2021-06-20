@@ -1,3 +1,7 @@
 .p-datatable .p-datatable-tbody > tr {
     cursor: pointer;
 }
+
+.p-datatable .p-datatable-tbody > tr:hover {
+    background-color: #D3D3D3;
+}
