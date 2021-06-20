@@ -34,7 +34,7 @@ public class BugServiceTest {
     @Test
     public void it_returns_an_empty_optional_if_bug_not_found() {
         Optional<BugPayload> maybeBug = bugService.findById(200L);
-        Assertions.assertTrue(maybeBug.isEmpty());
+        Assertions.assertFalse(maybeBug.isPresent());
     }
 
     @Test

@@ -16,6 +16,7 @@ public class UpdateRequestPayload implements Serializable {
     @NotNull
     private final Long id;
 
+    @NotNull
     @Size(max = 255, message = "The title cannot be longer than 255 characters")
     private final String name;
 
