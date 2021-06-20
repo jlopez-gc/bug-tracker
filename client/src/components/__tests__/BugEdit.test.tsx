@@ -6,27 +6,11 @@ import * as statusService from '../../shared/services/status.service';
 import { AxiosResponse } from 'axios';
 import userEvent from '@testing-library/user-event';
 import { screen } from '@testing-library/react';
-
-const mockedStatuses = [
-    { id: 1, name: 'Pending' },
-    { id: 2, name: 'In Progress' },
-    { id: 3, name: 'Done' },
-];
+import { mockedStatuses } from '../../fixtures/status.fixtures';
+import { validBug } from '../../fixtures/bug.fixtures';
 
 beforeEach(() => {
-    jest.spyOn(bugService, 'findBugById').mockImplementation(() =>
-        Promise.resolve({
-            id: 1,
-            name: 'Test Bug 1',
-            description: 'This is a simple bug description',
-            status: {
-                id: 1,
-                name: 'Pending',
-            },
-            createdAt: '2020-12-27T22:00:00',
-            updatedAt: '2020-12-27T22:00:00',
-        }),
-    );
+    jest.spyOn(bugService, 'findBugById').mockImplementation(() => Promise.resolve(validBug));
 
     jest.spyOn(statusService, 'findAllStatuses').mockResolvedValue(mockedStatuses);
 });

@@ -3,30 +3,14 @@ import BugInformationEditor from '../BugInformationEditor';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import * as statusService from '../../shared/services/status.service';
-
-const mockedStatuses = [
-    { id: 1, name: 'Pending' },
-    { id: 2, name: 'In Progress' },
-    { id: 3, name: 'Done' },
-];
+import { emptyBug } from '../../fixtures/bug.fixtures';
+import { mockedStatuses } from '../../fixtures/status.fixtures';
 
 beforeEach(() => jest.spyOn(statusService, 'findAllStatuses').mockImplementation(() => Promise.resolve(mockedStatuses)));
 
 test('it shows require validation messages information is not filled', async () => {
     const handleSubmit = jest.fn();
-    const { findByText } = render(
-        <BugInformationEditor
-            onSubmit={handleSubmit}
-            initialValues={{
-                name: '',
-                description: '',
-                id: null,
-                status: null,
-                createdAt: '',
-                updatedAt: '',
-            }}
-        />,
-    );
+    const { findByText } = render(<BugInformationEditor onSubmit={handleSubmit} initialValues={emptyBug} />);
 
     userEvent.click(screen.getByRole('button', { name: /submit/i }));
 

@@ -4,31 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { renderWithRouterWrapper } from '../../testing.util';
 import * as bugService from '../../shared/services/bug.service';
 import { act } from '@testing-library/react';
-
-const mockedIssues = [
-    {
-        id: 524,
-        name: 'Test Bug 1',
-        description: 'This is a simple bug description',
-        status: {
-            id: 1,
-            name: 'Pending',
-        },
-        createdAt: '2020-12-27T22:00:00',
-        updatedAt: '2020-12-27T22:00:00',
-    },
-    {
-        id: 525,
-        name: 'Test Bug 2',
-        description: 'This is a simple bug description',
-        status: {
-            id: 1,
-            name: 'In Progress',
-        },
-        createdAt: '2020-12-27T22:00:00',
-        updatedAt: '2020-12-27T22:00:00',
-    },
-];
+import { mockedIssues } from '../../fixtures/bug.fixtures';
 
 afterEach(() => jest.clearAllMocks());
 
