@@ -13,7 +13,7 @@ function App() {
     return (
         <div className="container">
             <Router>
-                <BugList path="/" />
+                <BugList path="/" default />
                 <BugCreate path="/bug" />
                 <BugEdit path="/bug/:id" />
             </Router>
