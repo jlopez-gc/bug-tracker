@@ -23,11 +23,11 @@ const BugEdit: React.FunctionComponent<RouteComponentProps> = () => {
     useEffect(() => {
         findBugById(routeParams.id)
             .then((bug) => setBug(bug))
-            .catch((error) => {
+            .catch(() => {
                 messagesRef.current?.show({
                     severity: 'error',
                     sticky: true,
-                    detail: error.response.data.message ?? 'The bug could not be updated, please try again later',
+                    detail: 'The bug could not be retrieved, please try again later',
                 });
             });
     }, [routeParams.id]);
