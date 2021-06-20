@@ -27,7 +27,7 @@ const BugEdit: React.FunctionComponent<RouteComponentProps> = () => {
                 messagesRef.current?.show({
                     severity: 'error',
                     sticky: true,
-                    detail: error.response.data.message ?? 'An unknown error occurred, please try again later',
+                    detail: error.response.data.message ?? 'The bug could not be updated, please try again later',
                 });
             });
     }, [routeParams.id]);

@@ -10,7 +10,15 @@ const BugCreate: React.FunctionComponent<RouteComponentProps> = () => {
     const navigate = useNavigate();
 
     const handleSubmit = (values: BugPayload) => {
-        createBug(values).then(() => navigate('/'));
+        createBug(values)
+            .then(() => navigate('/'))
+            .catch((error) => {
+                messagesRef.current?.show({
+                    severity: 'error',
+                    sticky: true,
+                    detail: error.response.data.message ?? 'The bug could not be created  , please try again later',
+                });
+            });
     };
 
     return (
