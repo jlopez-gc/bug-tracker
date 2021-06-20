@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from 'axios';
 import { BugPayload } from '../models/BugPayload';
-import { UpdateRequestPayload } from '../models/UpdateRequestPayload';
-import CreationRequestPayload from '../models/CreationRequestPayload';
+import BugUpdateRequestPayload from '../models/BugUpdateRequestPayload';
+import BugCreationRequestPayload from '../models/BugCreationRequestPayload';
 
 export const findAllBugs = async (): Promise<BugPayload[]> => {
     return axios.get('/bug').then((response: AxiosResponse<BugPayload[]>) => response.data);
@@ -14,20 +14,11 @@ export const findBugById = async (id: number): Promise<BugPayload> => {
 };
 
 export const createBug = (bug: BugPayload) => {
-    const creationRequest: CreationRequestPayload = {
-        name: bug.name,
-        description: bug.description,
-        status: bug.status ?? { id: -1, name: '' },
-    };
+    const creationRequest: BugCreationRequestPayload = BugCreationRequestPayload.from(bug);
     return axios.post(`/bug/`, creationRequest);
 };
 
 export const updateBugById = (id: number, bug: BugPayload) => {
-    const updateRequest: UpdateRequestPayload = {
-        id: bug.id ?? -1,
-        name: bug.name,
-        description: bug.description,
-        status: bug.status ?? { id: -1, name: '' },
-    };
+    const updateRequest: BugUpdateRequestPayload = BugUpdateRequestPayload.from(bug);
     return axios.put(`/bug/${id}`, updateRequest);
 };
