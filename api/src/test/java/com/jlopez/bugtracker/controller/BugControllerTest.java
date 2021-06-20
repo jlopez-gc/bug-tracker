@@ -1,11 +1,9 @@
 package com.jlopez.bugtracker.controller;
 
 import com.jlopez.bugtracker.WebMvcTestConfiguration;
-import com.jlopez.bugtracker.exception.InvalidInformationException;
-import com.jlopez.bugtracker.exception.ResourceNotFoundException;
 import com.jlopez.bugtracker.model.BugPayload;
+import com.jlopez.bugtracker.model.BugUpdateRequestPayload;
 import com.jlopez.bugtracker.model.StatusPayload;
-import com.jlopez.bugtracker.model.UpdateRequestPayload;
 import com.jlopez.bugtracker.service.BugService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +19,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(BugController.class)
@@ -68,9 +64,9 @@ public class BugControllerTest extends WebMvcTestConfiguration {
 
     @Test
     public void it_returns_ok_when_updating_an_existing_bug() throws Exception {
-        doNothing().when(bugService).update(anyLong(), any());
+        when(bugService.update(anyLong(), any())).thenReturn(Optional.of(BugPayload.builder().build()));
 
-        UpdateRequestPayload updatePayload = UpdateRequestPayload.builder().id(1L).name("Test update").description("Test Update").status(StatusPayload.builder().id(1L).name("Pending").build()).build();
+        BugUpdateRequestPayload updatePayload = BugUpdateRequestPayload.builder().id(1L).name("Test update").description("Test Update").status(StatusPayload.builder().id(1L).name("Pending").build()).build();
 
         mockMvc.perform(put("/bug/1").contentType(MediaType.APPLICATION_JSON).content(asJsonString(updatePayload))).andExpect(status().isOk());
 
@@ -78,10 +74,10 @@ public class BugControllerTest extends WebMvcTestConfiguration {
     }
 
     @Test
-    public void it_returns_not_found_when_updating_an_existing_bug() throws Exception {
-        doThrow(ResourceNotFoundException.class).when(bugService).update(anyLong(), any());
+    public void it_returns_not_found_when_updating_a_non_existing_bug() throws Exception {
+        when(bugService.update(anyLong(), any())).thenReturn(Optional.empty());
 
-        UpdateRequestPayload updatePayload = UpdateRequestPayload.builder().id(200L).name("Test update").description("Test Update").status(StatusPayload.builder().id(1L).name("Pending").build()).build();
+        BugUpdateRequestPayload updatePayload = BugUpdateRequestPayload.builder().id(200L).name("Test update").description("Test Update").status(StatusPayload.builder().id(1L).name("Pending").build()).build();
 
         mockMvc.perform(put("/bug/200").contentType(MediaType.APPLICATION_JSON).content(asJsonString(updatePayload))).andExpect(status().isNotFound());
 
@@ -89,24 +85,8 @@ public class BugControllerTest extends WebMvcTestConfiguration {
     }
 
     @Test
-    public void it_returns_bad_request_when_updating_existing_bug_with_wrong_information() throws Exception {
-        doThrow(InvalidInformationException.class).when(bugService).update(anyLong(), any());
-
-        UpdateRequestPayload updatePayload = UpdateRequestPayload.builder()
-                .id(1L)
-                .name("Test update")
-                .description("Test Update")
-                .status(StatusPayload.builder().id(525L).name("Pending").build())
-                .build();
-
-        mockMvc.perform(put("/bug/1").contentType(MediaType.APPLICATION_JSON).content(asJsonString(updatePayload))).andExpect(status().isBadRequest());
-
-        verify(bugService, times(1)).update(anyLong(), any());
-    }
-
-    @Test
     public void it_returns_bad_request_when_updating_with_no_name() throws Exception {
-        UpdateRequestPayload updatePayload = UpdateRequestPayload.builder().id(1L).description("Test Update").status(StatusPayload.builder().id(1L).name("Pending").build()).build();
+        BugUpdateRequestPayload updatePayload = BugUpdateRequestPayload.builder().id(1L).description("Test Update").status(StatusPayload.builder().id(1L).name("Pending").build()).build();
 
         mockMvc.perform(put("/bug/1").contentType(MediaType.APPLICATION_JSON).content(asJsonString(updatePayload)))
                 .andExpect(status().isBadRequest());
@@ -116,7 +96,7 @@ public class BugControllerTest extends WebMvcTestConfiguration {
 
     @Test
     public void it_returns_bad_request_when_updating_with_no_status() throws Exception {
-        UpdateRequestPayload updatePayload = UpdateRequestPayload.builder()
+        BugUpdateRequestPayload updatePayload = BugUpdateRequestPayload.builder()
                 .id(1L)
                 .name("Test")
                 .description("Test Update")
@@ -126,5 +106,21 @@ public class BugControllerTest extends WebMvcTestConfiguration {
                 .andExpect(status().isBadRequest());
 
         verify(bugService, times(0)).update(anyLong(), any());
+    }
+
+    @Test
+    public void it_returns_ok_when_new_bug_is_created() throws Exception {
+        when(bugService.create(any())).thenReturn(Optional.of(BugPayload.builder().build()));
+
+        BugUpdateRequestPayload updatePayload = BugUpdateRequestPayload.builder()
+                .id(1L)
+                .name("Test update")
+                .description("Test Update")
+                .status(StatusPayload.builder().id(525L).name("Pending").build())
+                .build();
+
+        mockMvc.perform(post("/bug").contentType(MediaType.APPLICATION_JSON).content(asJsonString(updatePayload))).andExpect(status().isOk());
+
+        verify(bugService, times(1)).create(any());
     }
 }

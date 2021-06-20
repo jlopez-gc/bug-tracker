@@ -9,14 +9,10 @@ import java.io.Serializable;
 
 @Data
 @Builder
-public class UpdateRequestPayload implements Serializable {
+public class BugCreationRequestPayload implements Serializable {
 
-    private static final long serialVersionUID = -6101127785318552413L;
+    private static final long serialVersionUID = 6230221661145812510L;
 
-    @NotNull
-    private final Long id;
-
-    @NotNull
     @Size(max = 255, message = "The title cannot be longer than 255 characters")
     private final String name;
 

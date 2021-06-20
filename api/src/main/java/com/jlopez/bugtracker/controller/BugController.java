@@ -1,8 +1,8 @@
 package com.jlopez.bugtracker.controller;
 
 import com.jlopez.bugtracker.model.BugPayload;
-import com.jlopez.bugtracker.model.CreationRequestPayload;
-import com.jlopez.bugtracker.model.UpdateRequestPayload;
+import com.jlopez.bugtracker.model.BugUpdateRequestPayload;
+import com.jlopez.bugtracker.model.BugCreationRequestPayload;
 import com.jlopez.bugtracker.service.BugService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,17 +34,12 @@ public class BugController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void create(@RequestBody @Valid CreationRequestPayload creationRequestPayload) {
-        log.info("Creating bug with the following information {}", creationRequestPayload);
-        bugService.create(creationRequestPayload);
-        log.info("created bug with");
+    public ResponseEntity<BugPayload> create(@RequestBody @Valid BugCreationRequestPayload bugCreationRequestPayload) {
+        return bugService.create(bugCreationRequestPayload).map(ResponseEntity::ok).orElse(ResponseEntity.unprocessableEntity().build());
     }
 
     @PutMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public void update(@PathVariable Long id, @RequestBody @Valid UpdateRequestPayload updateRequestPayload) {
-        log.info("Updating bug with id={} with the following information {}", id, updateRequestPayload);
-        bugService.update(id, updateRequestPayload);
-        log.info("Updated bug with id={}", id);
+    public ResponseEntity<BugPayload> update(@PathVariable Long id, @RequestBody @Valid BugUpdateRequestPayload bugUpdateRequestPayload) {
+        return bugService.update(id, bugUpdateRequestPayload).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 }
