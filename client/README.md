@@ -13,7 +13,8 @@ When it's finish type the next one to start the project:
 
 ### `npm run start`
 
-This will open [http://localhost:3000](http://localhost:3000) to view it in the browser. Changes in the code should trigger an automatic update of the 
+This will open [http://localhost:3000](http://localhost:3000) to view it in the browser. Changes in the code should trigger an automatic update of the page with the nes changes without loosing state.\
+The application uses an env file to declare the backend url, and expects it to be in localhost:8080, if the server is in another port consider changing .env file.
 
 ## Tests
 
