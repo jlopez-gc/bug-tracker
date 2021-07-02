@@ -1,45 +1,71 @@
 package com.jlopez.bugtracker.controller;
 
+import com.jlopez.bugtracker.model.BugCreationRequestPayload;
 import com.jlopez.bugtracker.model.BugPayload;
 import com.jlopez.bugtracker.model.BugUpdateRequestPayload;
-import com.jlopez.bugtracker.model.BugCreationRequestPayload;
 import com.jlopez.bugtracker.service.BugService;
-import lombok.AllArgsConstructor;
+import java.util.List;
+import javax.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.validation.Valid;
-import java.util.List;
-
+@RequiredArgsConstructor
+@Slf4j
 @RestController
 @RequestMapping("/bug")
-@AllArgsConstructor
-@Slf4j
 public class BugController {
 
-    private final BugService bugService;
+  private final BugService bugService;
 
-    @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    public List<BugPayload> findAll() {
-        return bugService.findAll();
+  @GetMapping
+  public ResponseEntity<List<BugPayload>> findAll() {
+    return ResponseEntity.ok(bugService.findAll());
+  }
+
+  @GetMapping("/{id}")
+  public ResponseEntity<BugPayload> findById(@PathVariable Long id) {
+    return bugService.findById(id)
+        .map(ResponseEntity::ok)
+        .orElse(ResponseEntity.notFound().build());
+  }
+
+  @PostMapping
+  public ResponseEntity<BugPayload> create(@RequestBody @Valid BugCreationRequestPayload bugCreationRequestPayload) {
+    BugPayload newBug = bugService.create(bugCreationRequestPayload);
+    return ResponseEntity.created(ServletUriComponentsBuilder
+        .fromCurrentRequest()
+        .path("/{id}")
+        .buildAndExpand(newBug.getId())
+        .toUri()).body(newBug);
+  }
+
+  @PutMapping("/{id}")
+  public ResponseEntity<BugPayload> update(@PathVariable Long id, @RequestBody @Valid BugUpdateRequestPayload bugUpdateRequestPayload) {
+    if (!bugUpdateRequestPayload.getId().equals(id)) {
+      throw new BugUpdateRequestMismatchIdException("Resource id mismatch payload id");
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<BugPayload> findById(@PathVariable Long id) {
-        return bugService.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
-    }
+    return bugService.update(bugUpdateRequestPayload)
+        .map(ResponseEntity::ok)
+        .orElse(ResponseEntity.notFound().build());
+  }
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<BugPayload> create(@RequestBody @Valid BugCreationRequestPayload bugCreationRequestPayload) {
-        return bugService.create(bugCreationRequestPayload).map(ResponseEntity::ok).orElse(ResponseEntity.unprocessableEntity().build());
-    }
+  @ResponseStatus(HttpStatus.CONFLICT)
+  public static class BugUpdateRequestMismatchIdException extends RuntimeException {
 
-    @PutMapping("/{id}")
-    public ResponseEntity<BugPayload> update(@PathVariable Long id, @RequestBody @Valid BugUpdateRequestPayload bugUpdateRequestPayload) {
-        return bugService.update(id, bugUpdateRequestPayload).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    public BugUpdateRequestMismatchIdException(String message) {
+      super(message);
     }
+  }
 }

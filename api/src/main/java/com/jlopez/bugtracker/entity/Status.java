@@ -1,19 +1,18 @@
 package com.jlopez.bugtracker.entity;
 
-import lombok.Data;
-
+import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import java.io.Serializable;
+import lombok.Data;
 
-@Entity
 @Data
+@Entity
 public class Status implements Serializable {
 
-    private static final long serialVersionUID = -6167894638199394361L;
+  private static final long serialVersionUID = -6167894638199394361L;
 
-    @Id
-    private Long id;
+  @Id
+  private Long id;
 
-    private String name;
+  private String name;
 }
