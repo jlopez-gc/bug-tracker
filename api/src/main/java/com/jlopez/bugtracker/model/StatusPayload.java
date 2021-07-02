@@ -1,17 +1,16 @@
 package com.jlopez.bugtracker.model;
 
-import lombok.Builder;
-import lombok.Data;
-
 import java.io.Serializable;
+import lombok.Builder;
+import lombok.Getter;
 
-@Data
+@Getter
 @Builder
 public class StatusPayload implements Serializable {
 
-    private static final long serialVersionUID = -3773559041735846973L;
+  private static final long serialVersionUID = 1217859118955602191L;
 
-    private final Long id;
+  private final Long id;
 
-    private final String name;
+  private final String name;
 }
